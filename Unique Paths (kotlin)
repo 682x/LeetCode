@@ -1,0 +1,15 @@
+class Solution {
+    fun uniquePaths(m: Int, n: Int): Int {
+        val grid: IntArray = IntArray(m * n)
+        grid[0] = 1
+        for (i in 1..(m * n - 1)) {
+            if (i % n > 0) {
+                grid[i] += grid[i - 1]
+            }
+            if (i / n > 0) {
+                grid[i] += grid[i - n]
+            }
+        }
+        return grid[m * n - 1]
+    }
+}
