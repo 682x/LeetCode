@@ -1,0 +1,30 @@
+public class Solution {
+    public IList<IList<int>> ThreeSum(int[] nums) {
+        IList<IList<int>> solutions = new List<IList<int>>();
+        int target, left, right;
+        Array.Sort(nums);
+        for (int i = 0; i < nums.Length - 2; i++) {
+            if (i > 0) if (nums[i] == nums[i - 1]) continue;
+            target = -nums[i];
+            left = i + 1;
+            right = nums.Length - 1;
+            while (left < right) {
+                if (nums[left] + nums[right] == target) {
+                    IList<int> x = new int[] {-target, nums[left], nums[right]};
+                    solutions.Add(x);
+                }
+                if (nums[left] + nums[right] > target) {
+                    int t = nums[right];
+                    while (nums[right] == t && right > 0)
+                        right--;
+                }
+                else {
+                    int t = nums[left];
+                    while (nums[left] == t && left < nums.Length - 1)
+                        left++;
+                }
+            }
+        }
+        return solutions;
+    }
+}
