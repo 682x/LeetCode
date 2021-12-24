@@ -1,0 +1,65 @@
+class Solution {
+    public int furthestBuilding(int[] heights, int bricks, int ladders) {
+        int moves = 0, index = 0, furthest = 0;
+        int[] diff, locations;
+        for (int i = 0; i < heights.length - 1; i++)
+        {
+            if (heights[i] < heights[i + 1])
+                moves++;
+        }
+        diff = new int[moves];
+        locations = new int[moves];
+        for (int i = 0; i < heights.length - 1; i++)
+        {
+            if (heights[i] < heights[i + 1])
+            {
+                diff[index] = heights[i + 1] - heights[i];
+                locations[index] = i + 1;
+                index++;
+            }
+        }
+        PriorityQueue<Integer> ladderDiff = new PriorityQueue<Integer>();
+        for (int i = 0; i < moves; i++)
+        {
+            if (ladderDiff.size() < ladders)
+                ladderDiff.add(diff[i]);
+            else
+            {
+                if (ladders == 0)
+                {
+                    bricks -= diff[i];
+                    if (bricks < 0)
+                    {
+                        furthest = locations[i] - 1;
+                        break;
+                    }
+                    furthest = locations[i];
+                }
+                else if (diff[i] > ladderDiff.peek())
+                {
+                    bricks -= ladderDiff.poll();
+                    ladderDiff.add(diff[i]);
+                    if (bricks < 0)
+                    {
+                        furthest = locations[i] - 1;
+                        break;
+                    }
+                    furthest = locations[i];
+                }
+                else
+                {
+                    bricks -= diff[i];
+                    if (bricks < 0)
+                    {
+                        furthest = locations[i] - 1;
+                        break;
+                    }
+                    furthest = locations[i];
+                }
+            }
+            if (i == moves - 1)
+                return heights.length - 1;
+        }
+        return furthest;
+    }
+}

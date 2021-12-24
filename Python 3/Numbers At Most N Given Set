@@ -1,0 +1,70 @@
+#Initial solution, not very good
+
+class Solution:
+    def combo(digits, cur, n):
+        count = 0
+        for k in digits:
+            a = cur + k
+            c = int(a)
+            if c <= n:
+                count += Solution.combo(digits, a, n) + 1
+        return count
+    
+    def atMostNGivenDigitSet(self, digits: List[str], n: int) -> int:
+        b = 0
+        k = int(math.log10(n) - 3)
+        a = math.pow(len(digits), k)
+        for i in range(k):
+            b += math.pow(len(digits), i + 1)
+        nbig = int(n // math.pow(10, k))
+        nsmall = int(n % math.pow(10, k))
+        print(k, a, b, nbig, nsmall)
+        if k <= 0:
+            return Solution.combo(digits, "", n)
+        sol1 = Solution.combo(digits, "", nbig - 1) * int(a)
+        sol2 = 0
+        cansmall = True
+        for i in range(int(math.log10(nbig)) + 1):
+            if not str(nbig % 10) in digits:
+                cansmall = False
+                break
+            nbig = nbig // 10
+        if nsmall == 0:
+            cansmall = False
+        elif int(math.log10(nsmall)) < k - 1:
+            cansmall = False
+        if cansmall:
+            sol2 = Solution.combo(digits, "", nsmall)
+        print(cansmall, sol1 / a, sol2)
+        if cansmall: 
+            return sol1 + sol2 + int(a)
+        return sol1 + sol2 + int(b)
+        
+#Improved Solution
+            
+class Solution:
+    def evolutionClaus(digits, n):
+        if n == 0:
+            return 0
+        k = int(math.log10(n))
+        x = int(n // math.pow(10, k))
+        print(n, k, x)
+        count1 = 0
+        if str(x) in digits:
+            if k == 0:
+                count1 = 1
+            elif (n % math.pow(10, k) < math.pow(10, k - 1)):
+                count1 = 0
+            else:
+                count1 = Solution.evolutionClaus(digits, int(n % math.pow(10, k)))
+        count = 0
+        for c in digits:
+            if x > int(c):
+                count += 1
+        return count1 + count * int(math.pow(len(digits), k))
+    
+    def atMostNGivenDigitSet(self, digits: List[str], n: int) -> int:
+        lob = 0
+        for i in range(int(math.log10(n))):
+            lob += int(math.pow(len(digits), i + 1))
+        return lob + Solution.evolutionClaus(digits, n)
